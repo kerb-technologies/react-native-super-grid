@@ -4,7 +4,26 @@ function chunkArray(array = [], size) {
   return array.reduce((acc, val) => {
     if (acc.length === 0) acc.push([]);
     const last = acc[acc.length - 1];
-    if (last.length < size) {
+    
+    // START HACK
+    let lastLength = last.length;
+
+    // NOTE: I've added a special case here where
+    // and item can specify that it is multiple columns
+    // wide.
+
+    // This is the definition of a bad API where a
+    // random key on an item can have consequences
+    // but it's the least amount of change required
+    // to make a non-standard width item in a row work.
+    if (val && val.columnsWide) {
+      const widthRequired = val.columnsWide - 1;
+      lastLength += widthRequired;
+    }
+
+    // END HACK
+    
+    if (lastLength < size) {
       last.push(val);
     } else {
       acc.push([val]);
