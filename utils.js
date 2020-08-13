@@ -4,9 +4,9 @@ function chunkArray(array = [], size) {
   return array.reduce((acc, val) => {
     if (acc.length === 0) acc.push([]);
     const last = acc[acc.length - 1];
-    
+
     // START HACK
-    let lastLength = last.length;
+    const lastLength = last.length;
 
     // NOTE: I've added a special case here where
     // and item can specify that it is multiple columns
@@ -16,14 +16,12 @@ function chunkArray(array = [], size) {
     // random key on an item can have consequences
     // but it's the least amount of change required
     // to make a non-standard width item in a row work.
+    let widthRequired = 1;
     if (val && val.columnsWide) {
-      const widthRequired = val.columnsWide - 1;
-      lastLength += widthRequired;
+      widthRequired = val.columnsWide;
     }
-
     // END HACK
-    
-    if (lastLength < size) {
+    if (lastLength < size && widthRequired <= 1) {
       last.push(val);
     } else {
       acc.push([val]);
